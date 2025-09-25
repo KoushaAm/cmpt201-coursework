@@ -39,10 +39,11 @@ int main(void) {
     read = getline(&line, &len, stdin);
 
     if (read == -1) {
+      perror("getline() failed");
       break;
     }
 
-    strip_newline(line); // get rid of \n
+    strip_newline(line); // get rid of \\n
 
     // checking if the history index is occupied
     if (history[history_index] != NULL) {
