@@ -1,0 +1,86 @@
+#define _DEFAULT_SOURCE
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+int BUF_SIZE = 1024;
+
+struct header {
+  uint64_t size;
+  struct header *next;
+};
+
+// error hadling for print_out
+void handle_error(char *msg) {
+  perror(msg);
+  exit(EXIT_FAILURE);
+}
+
+// print function adapted from lab instructions
+void print_out(char *format, void *data, size_t data_size) {
+  char buf[BUF_SIZE];
+
+  ssize_t len = snprintf(buf, BUF_SIZE, format,
+                         data_size == sizeof(uint64_t) ? *(uint64_t *)data
+                                                       : *(void **)data);
+  if (len < 0) {
+    handle_error("snprintf");
+  }
+
+  write(STDOUT_FILENO, buf, len);
+}
+
+int main(void) {
+  // total_size is the full storage we have
+  size_t total_size = 256;
+  // block size is size of each block
+  size_t block_size = 128;
+  void *base_address = sbrk(total_size);
+
+  if (base_address == (void *)-1) {
+    handle_error("sbrk failed");
+  }
+
+  // contructing our blocks
+  struct header *block1 = (struct header *)base_address;
+  block1->size = block_size;
+  block1->next = NULL;
+  // block 2 is 128 bytes (one block_size) after block1
+  struct header *block2 = (struct header *)((char *)base_address + 128);
+  block2->size = block_size;
+  block2->next = block1;
+
+  // initialize block 1 and 2 to values
+  memset((char *)block1 + sizeof(struct header), 0,
+         block_size - sizeof(struct header));
+
+  memset((char *)block2 + sizeof(struct header), 1,
+         block_size - sizeof(struct header));
+
+  print_out("first block:   %p\n", block1, sizeof(void *));
+  print_out("second block:  %p\n", block2, sizeof(void *));
+  print_out("first block size: %lu\n", &block1->size, sizeof(uint64_t));
+  print_out("first block next: %p\n", &block1->next, sizeof(void *));
+  print_out("second block size: %lu\n", &block2->size, sizeof(uint64_t));
+  print_out("second block next: %p\n", &block2->next, sizeof(void *));
+
+  // making data blocks that can be printed
+  // we need to only take the data portion so block1 address + header size is
+  // where our data begins
+  unsigned char *block1_data = (unsigned char *)block1 + sizeof(struct header);
+  unsigned char *block2_data = (unsigned char *)block2 + sizeof(struct header);
+
+  for (size_t i = 0; i < block_size - sizeof(struct header); i++) {
+    print_out("%d\n", &block1_data[i], sizeof(uint64_t));
+  }
+
+  for (size_t i = 0; i < block_size - sizeof(struct header); i++) {
+    print_out("%d\n", &block2_data[i], sizeof(uint64_t));
+  }
+
+  return 0;
+}

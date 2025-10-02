@@ -1,0 +1,39 @@
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <unistd.h>
+int BUF_SIZE = 1024;
+
+struct header {
+  uint64_t size;
+  struct header *next;
+};
+
+void handle_error(char *msg) {
+  perror(msg);
+  exit(EXIT_FAILURE);
+}
+
+void print_out(char *format, void *data, size_t data_size) {
+  char buf[BUF_SIZE];
+  ssize_t len = snprintf(buf, BUF_SIZE, format,
+                         data_size == sizeof(uint64_t) ? *(uint64_t *)data
+                                                       : *(void **)data);
+  if (len < 0) {
+    handle_error("snprintf");
+  }
+
+  write(STDOUT_FILENO, buf, len);
+}
+
+int main(void) {
+  size_t total_size = 256;
+  
+
+
+  void *ret = sbrk(total_size);
+
+  return 0;
+}
