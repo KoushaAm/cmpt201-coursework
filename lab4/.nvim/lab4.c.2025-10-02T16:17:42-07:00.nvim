@@ -61,8 +61,8 @@ int main(void) {
   memset((char *)block2 + sizeof(struct header), 1,
          block_size - sizeof(struct header));
 
-  print_out("first block:   %p\n", &block1, sizeof(void *));
-  print_out("second block:  %p\n", &block2, sizeof(void *));
+  print_out("first block:   %p\n", block1, sizeof(void *));
+  print_out("second block:  %p\n", block2, sizeof(void *));
   print_out("first block size: %lu\n", &block1->size, sizeof(uint64_t));
   print_out("first block next: %p\n", &block1->next, sizeof(void *));
   print_out("second block size: %lu\n", &block2->size, sizeof(uint64_t));
