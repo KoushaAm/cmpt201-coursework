@@ -93,24 +93,24 @@ int main(void) {
   free(free_block5);
 
   /*
-   * Pseudocode: (Coalescing Continguous Free Blocks) 
-   * Input: Linked list of free blocks sorted by address 
+   * Pseudocode: (Coalescing Continguous Free Blocks)
+   * Input: Linked list of free blocks sorted by address and a newly freed block
    * Insert new_block into the free list in sorted order by address
    *
    * prev = NULL
    * curr = free_list_head
    *
-   * Travers the list: 
+   * Travers the list:
    *    while (curr != NULL) {
    *      if (curr is immediately before new_block) {
-   *          // merge with previous 
-   *          curr->size += sizeof(struct header) + new_block->size 
+   *          // merge with previous
+   *          curr->size += sizeof(struct header) + new_block->size
    *          curr->next = new_block->next
-   *          new_block = curr 
+   *          new_block = curr
    *      } else if (new_block is immediately before curr) {
    *        // merge with next
-   *        new_block->size += sizeof(struct header) + curr->size; 
-   *        new_block->next = curr->next; 
+   *        new_block->size += sizeof(struct header) + curr->size;
+   *        new_block->next = curr->next;
    *      }
    *      prev = curr
    *      curr = curr->next
@@ -121,7 +121,5 @@ int main(void) {
    *  return Free List with continuous blocks merged together
    */
 
-
   return 0;
-
 }
