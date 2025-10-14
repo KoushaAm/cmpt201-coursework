@@ -1,0 +1,70 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
+#include <unistd.h>
+
+// Structure to pass data to the thread
+typedef struct {
+    int number;
+} thread_data_t;
+
+// Thread function to analyze if number is even or odd
+void* analyze_number(void* arg) {
+    thread_data_t* data = (thread_data_t*)arg;
+    int num = data->number;
+    
+    printf("Thread: Analyzing number %d...\n", num);
+    
+    // Small delay to simulate processing
+    sleep(1);
+    
+    if (num % 2 == 0) {
+        printf("Thread: %d is an EVEN number\n", num);
+    } else {
+        printf("Thread: %d is an ODD number\n", num);
+    }
+    
+    pthread_exit(NULL);
+}
+
+int main() {
+    pthread_t thread_id;
+    thread_data_t thread_data;
+    int input_number;
+    
+    printf("=== Even/Odd Number Analyzer ===\n");
+    printf("Enter a number: ");
+    
+    // Get input from user
+    if (scanf("%d", &input_number) != 1) {
+        printf("Error: Please enter a valid integer!\n");
+        return 1;
+    }
+    
+    // Store the input number in thread data
+    thread_data.number = input_number;
+    
+    printf("Main: Creating thread to analyze the number...\n");
+    
+    // Create the thread
+    int result = pthread_create(&thread_id, NULL, analyze_number, &thread_data);
+    
+    if (result != 0) {
+        printf("Error: Failed to create thread! Error code: %d\n", result);
+        return 1;
+    }
+    
+    printf("Main: Thread created successfully. Waiting for thread to complete...\n");
+    
+    // Wait for the thread to finish
+    result = pthread_join(thread_id, NULL);
+    
+    if (result != 0) {
+        printf("Error: Failed to join thread! Error code: %d\n", result);
+        return 1;
+    }
+    
+    printf("Main: Thread completed its task. Program exiting.\n");
+    
+    return 0;
+}
