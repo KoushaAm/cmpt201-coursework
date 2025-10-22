@@ -5,7 +5,8 @@
 #define ASSERT(expr)                                                           \
   {                                                                            \
     if (!(expr)) {                                                             \
-      fprintf(stderr, "Assertion failed: %s\n", #expr);                        \
+      fprintf(stderr, "Assertion failed: %s (%s:%d)\n", #expr, __FILE__,       \
+              __LINE__);                                                       \
       exit(1);                                                                 \
     }                                                                          \
   }
@@ -29,6 +30,14 @@ typedef struct info {
 
 node_t *head = NULL;
 info_t info = {0};
+
+uint64_t list_sum(node_t *head) {
+  uint64_t sum = 0;
+  for (node_t *curr = head; curr != NULL; curr = curr->next) {
+    sum += curr->data;
+  }
+  return sum;
+}
 
 void insert_sorted(uint64_t data) {
   node_t *new_node = malloc(sizeof(node_t));
@@ -54,9 +63,10 @@ void insert_sorted(uint64_t data) {
     }
 
     prev->next = new_node;
-    if (curr != NULL) {
-      new_node->next = curr->next;
-    }
+    // if (curr != NULL) {
+    // new_node->next = curr->next;
+    //}
+    new_node->next = curr;
   }
 
   info.sum += data;
@@ -86,6 +96,9 @@ int main() {
 
   TEST(info.sum == 1 + 3 + 5 + 2);
   TEST(index_of(2) == 1);
+
+  ASSERT(info.sum == list_sum(head));
+  printf("all tests and assertions pass!\n");
 
   return 0;
 }
