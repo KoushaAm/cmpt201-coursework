@@ -1,12 +1,19 @@
 /*
 Questions to answer at top of client.c:
 (You should not need to change the code in client.c)
-1. What is the address of the server it is trying to connect to (IP address and port number).
+1. What is the address of the server it is trying to connect to (IP address and
+port number). answer: 127.0.0.1 local host (IP) and port number 8000
 2. Is it UDP or TCP? How do you know?
-3. The client is going to send some data to the server. Where does it get this data from? How can you tell in the code?
+answer: TCP because the socket is called with SOCK_STREAM ,  which is a TCP
+socket
+3. The client is going to send some data to the server. Where does it get this
+data from? How can you tell in the code? answer: data comes from our standard
+input , the code reads form STDIN_FILENO with read and write it into the buffer
+data in socket
 4. How does the client program end? How can you tell that in the code?
+answer: it ends and when read from standard input returns 0 (an EOF)
+    then it closes the connection with close() and exit(EXIT_SUCCESS)
 */
-
 
 #include <arpa/inet.h>
 #include <stdio.h>
