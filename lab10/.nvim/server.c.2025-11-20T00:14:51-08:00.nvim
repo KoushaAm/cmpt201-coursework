@@ -1,5 +1,5 @@
 /*
-TASK 1
+TASK 1 
 Questions to answer at top of server.c:
 Understanding the Client:
 1. How is the client sending data to the server? What protocol?
@@ -41,25 +41,23 @@ shutting all the trheads down.
 
 
 
-TASK 2:
-How are the sockets made non-blocking ?
-Each socket's file descriptor is modified using fcntl() system cal:
-  int flags = fcntl(fd, F_GETFL, 0);
-  fcntl(fd, F_GETFL, 0);
-this will set the O_NONBLOCK flag, which makes read(), write() and accep()
-return imediately
+TASK 2: 
+How are the sockets made non-blocking ? 
+Each socket's file descriptor is modified using fcntl() system cal: 
+  int flags = fcntl(fd, F_GETFL, 0); 
+  fcntl(fd, F_GETFL, 0); 
+this will set the O_NONBLOCK flag, which makes read(), write() and accep() return imediately
 
-What sockets are made non-blocking?
-both listening socket (that is used by acceptor threa) and each client's socket
-are made non-blocking in this lab. The acceptor socket is to nonblocking in
-run_acceptor() and each of the cleints socket is set to non-blocking in
-run_client()
+What sockets are made non-blocking? 
+both listening socket (that is used by acceptor threa) and each client's socket are made
+non-blocking in this lab. The acceptor socket is to nonblocking in run_acceptor() and each of the
+cleints socket is set to non-blocking in run_client()
 
-Why are these sockets made non-blocking? what purpose does it server?
-non-blocking sockets prevent threds from being stuck waiting on blocking system
-calls such as accept and read. when a new client or data is ready this allows
-the server to accept multipel clients efficiently , periodically check for stop
-condition , cleanly shut down all threads when all messages have been recieved
+Why are these sockets made non-blocking? what purpose does it server? 
+non-blocking sockets prevent threds from being stuck waiting on blocking system calls such as accept
+and read. when a new client or data is ready this allows the server to accept multipel clients
+efficiently , periodically check for stop condition , cleanly shut down all threads when all
+messages have been recieved
 */
 #include <arpa/inet.h>
 #include <errno.h>

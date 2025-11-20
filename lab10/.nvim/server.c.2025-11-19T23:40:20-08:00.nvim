@@ -1,65 +1,14 @@
 /*
-TASK 1
 Questions to answer at top of server.c:
+(You should not need to change client.c)
 Understanding the Client:
 1. How is the client sending data to the server? What protocol?
-  the client opens an IPv4 TCP socket (AF_INET, SOCK_STREAM) to the server's
-address. the clients use write() to sent data over the TCP connection
-
 2. What data is the client sending to the server?
-  the cleint sends a fixed size buffer with BUF_SIZE each time. each buffer is
-null terminated string from its messages[] array. Each client sends
-NUM_MSG_PER_CLIENT messages
-
 Understanding the Server:
 1. Explain the argument that the `run_acceptor` thread is passed as an argument.
-run_acceptor is passed as a  pointer toa struct acceptor_argss. This struct
-holds a run flag which tells the thread hen to stop, a poitner that shared
-list_handle, and a pointer to the mutex that protects that list. The threa uses
-this shared state while it's accepting clients.
-
 2. How are received messages stored?
-recieved messages are all copied intoa new allocatd list_node inside the heap
-memory. Then these nodes are appended to a linked list. the list_handle or our
-linked list keeps track of tail pointer and  acount of how many messages server
-has stored.
-
 3. What does `main()` do with the received messages?
-waits until the toal number of stored messages reaches MAX_CLIENTS *
-NUM_MSG_PER_CLIENT.  then it stops the acceptor thread and calls collect_all()
-on the list heaad to print "collected: ..." for every message and count them,
-checks the count to see if it meathce list_handle.count, prints success/failure
-and finally cleans up and exits
-
 4. How are threads used in this sample code?
-the main thread starts an acceptor thread executing (run_acceptor) that listen
-for any client connection that comes in. for each client then we create a a
-sparate client thread to handle the lcient's socket. these clients thread un in
-parallel reading messsgand adding them to the shraed list. in the meantime the
-main thread waits until enough messeges have been recieved and the starts
-shutting all the trheads down.
-
-
-
-TASK 2:
-How are the sockets made non-blocking ?
-Each socket's file descriptor is modified using fcntl() system cal:
-  int flags = fcntl(fd, F_GETFL, 0);
-  fcntl(fd, F_GETFL, 0);
-this will set the O_NONBLOCK flag, which makes read(), write() and accep()
-return imediately
-
-What sockets are made non-blocking?
-both listening socket (that is used by acceptor threa) and each client's socket
-are made non-blocking in this lab. The acceptor socket is to nonblocking in
-run_acceptor() and each of the cleints socket is set to non-blocking in
-run_client()
-
-Why are these sockets made non-blocking? what purpose does it server?
-non-blocking sockets prevent threds from being stuck waiting on blocking system
-calls such as accept and read. when a new client or data is ready this allows
-the server to accept multipel clients efficiently , periodically check for stop
-condition , cleanly shut down all threads when all messages have been recieved
 */
 #include <arpa/inet.h>
 #include <errno.h>
@@ -298,6 +247,7 @@ int main() {
     if (count >= expected) {
       break;
     }
+
   }
 
   aargs.run = false;
