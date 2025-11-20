@@ -131,10 +131,11 @@ static void *run_client(void *args) {
 
       struct list_handle *list_handle = cargs->list_handle;
       // TODO: Safely use add_to_list to add new_node to the list
-      pthread_mutex_t *lock = cargs->list_lock;
+      pthread_mutex_t *lock = cargs->list_lock; 
       pthread_mutex_lock(lock);
-      add_to_list(list_handle, new_node);
-      pthread_mutex_unlock(lock);
+      add_to_list(list_handle, new_node); 
+      pthread_mutex_unlock(lock); 
+
     }
   }
 
@@ -172,12 +173,12 @@ static void *run_acceptor(void *args) {
         num_clients++;
 
         // TODO: Create a new thread to handle the client
-        if (pthread_create(&threads[num_clients - 1], NULL, run_client,
-                           &client_args[num_clients - 1]) != 0) {
-          perror("pthread_create");
-          close(cfd);
-          client_args[num_clients - 1].run = false;
-          num_clients--;
+        if(pthread_create(&threads[num_clients - 1], NULL, run_client, &client_args[num_clients-1])
+            != 0) {
+          perror("pthread_create"); 
+          close(cfd); 
+          client_args[num_clients - 1].run = false; 
+          num_clients--; 
         }
       }
     }
@@ -188,13 +189,13 @@ static void *run_acceptor(void *args) {
   // Shutdown and cleanup
   for (int i = 0; i < num_clients; i++) {
     // TODO: Set flag to stop the client thread
-    client_args[i].run = false;
+    client_args[i].run = false; 
   }
 
   // TODO: Wait for the cleitn thread and close its socket
   for (int i = 0; i < num_clients; i++) {
     if (pthread_join(threads[i], NULL) != 0) {
-      perror("pthread_join");
+      perror("pthread_join"); 
     }
   }
 
@@ -203,6 +204,7 @@ static void *run_acceptor(void *args) {
   }
   return NULL;
 }
+
 
 int main() {
   pthread_mutex_t list_mutex;
@@ -228,15 +230,15 @@ int main() {
   // TODO: Wait until enough messages are received
   uint32_t expected = MAX_CLIENTS * NUM_MSG_PER_CLIENT;
   while (1) {
-    pthread_mutex_lock(&list_mutex);
+    pthread_mutex_lock(&list_mutex); 
     uint32_t count = list_handle.count;
-    pthread_mutex_unlock(&list_mutex);
+    pthread_mutex_unlock(&list_mutex); 
 
-    if (count >= expected) {
-      break;
+    if (count >= expected){
+      break; 
     }
 
-    sleep(1000);
+    sleep(1000); 
   }
 
   aargs.run = false;
