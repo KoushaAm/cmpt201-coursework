@@ -1,0 +1,23 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/wait.h>
+#include <unistd.h>
+
+int main(void) {
+  char *input = NULL;
+  size_t len = 0; // current allocated size for line
+  ssize_t nread;  // size for getline
+
+  while (1) {
+    printf("Enter programs to run.\n> ");
+
+    if (strlen(input) == 0) {
+      printf("Exiting program.\n");
+      break;
+    }
+  }
+
+  free(input); 
+  return 1;
+}

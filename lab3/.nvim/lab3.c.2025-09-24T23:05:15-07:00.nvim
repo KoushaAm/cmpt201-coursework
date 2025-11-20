@@ -1,0 +1,68 @@
+#define _POSIX_C_SOURCE 200809L
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+void strip_newline(char *str) {
+  size_t len = strlen(str);
+  if (len > 0 && str[len - 1] == '\n') {
+    str[len - 1] = '\0';
+  }
+}
+
+void print_history(char* history[], int history_index) {
+  for (int i = 0; i < 5; i++) {
+    int idx = (history_index + i) % 5; 
+    if (history[idx] != NULL) {
+      printf("%s\n", history[idx]); 
+    }
+  }
+}
+
+int main(void) {
+  char *line = NULL;
+  size_t len = 0;
+  ssize_t read;
+
+  char *history[5] = {NULL}; // our memory that stores pointers to the strings that is inputed
+
+  int history_index = 0; // current writable index in history array
+
+  while (true) {
+    printf("Enter input: ");
+    read = getline(&line, &len, stdin);
+    
+    if (read == -1) {
+      break;
+    }
+
+    strip_newline(line);
+
+    // checking if the history index is occupied
+    if (history[history_index] != NULL) {
+      free(history[history_index]);
+    }
+
+    history[history_index] = strdup(line);
+    if (history[history_index] == NULL) {
+      perror("failed to write into history");
+      exit(EXIT_FAILURE); 
+    }
+    
+    history_index = (history_index + 1) % 5; 
+
+    if (strcmp(line, "print") == 0) {
+      print_history(history, history_index); 
+    }
+
+    
+  }
+
+  //cleaning up memory
+  for (int i = 0; i < 5; i++) {
+    free(history[i]); 
+  }
+
+  free(line); 
+}

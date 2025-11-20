@@ -1,0 +1,19 @@
+#define _POSIX_C_SOURCE 200809L
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+
+int main(void) {
+  char *line = NULL;
+  size_t len = 0;
+  ssize_t read;
+
+  char * history [5] = {NULL}; // our memory that stores pointers to the strings that is inputed
+
+  while (true) {
+    printf("Enter input: "); 
+    size_t input = getline(&line, &len , stdin); 
+  
+  }
+}
