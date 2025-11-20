@@ -44,7 +44,7 @@ shutting all the trheads down.
 TASK 2:
 How are the sockets made non-blocking ?
 Each socket's file descriptor is modified using fcntl() system cal:
-  int flags = fcntl(fd, F_GETFL, 0);
+  int flags = fcntl(fd, F_GETFL, flags | O_NONBLOCK);
   fcntl(fd, F_GETFL, 0);
 this will set the O_NONBLOCK flag, which makes read(), write() and accep()
 return imediately
