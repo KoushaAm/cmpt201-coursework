@@ -1,3 +1,15 @@
+/*
+Questions to answer at top of server.c:
+(You should not need to change client.c)
+Understanding the Client:
+1. How is the client sending data to the server? What protocol?
+2. What data is the client sending to the server?
+Understanding the Server:
+1. Explain the argument that the `run_acceptor` thread is passed as an argument.
+2. How are received messages stored?
+3. What does `main()` do with the received messages?
+4. How are threads used in this sample code?
+*/
 #include <arpa/inet.h>
 #include <errno.h>
 #include <fcntl.h>
