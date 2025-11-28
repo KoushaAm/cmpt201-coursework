@@ -113,8 +113,7 @@ int verify(const char *message_path, const char *sign_path, EVP_PKEY *pubkey) {
   size_t msg_len = read_all_bytes(message_path, message, MAX_FILE_SIZE);
   size_t sig_len = read_all_bytes(sign_path, signature, MAX_FILE_SIZE);
   // tweaking signature
-  signature[0] ^= 0x01;
-
+  // signature[0] ^= 0x01;
   // makingnew digest context
   EVP_MD_CTX *md_ctx = EVP_MD_CTX_new();
   if (!md_ctx)
